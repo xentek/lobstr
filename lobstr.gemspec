@@ -21,5 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('net-ssh')
 
   gem.add_development_dependency('minitest', '3.4.0')
+  gem.add_development_dependency('ansi')
+  gem.add_development_dependency('turn')
 
 end

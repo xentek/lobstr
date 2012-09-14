@@ -9,17 +9,10 @@ class Lob < Thor
   \n\n 
   Example: lob deploy master@production"  
   def deploy(target='master@production')
-    branch,environment = target.split('@', 2)
- 
-    if environment.nil? # e.g. production
-      environment = branch
-      branch = 'master'
-    end
+    lobstr = Lobstr::Deploy.new
+    branch,env = lobstr.parse_target(target)
 
-    branch = "master" if branch.empty? # e.g. @production
-    environment = "production" if environment.empty? # e.g. master@    
-    
-    say "deploying #{branch} to #{environment}", :blue
+    say "deploying #{set_color(branch,:yellow)} to #{set_color(env, :yellow)}"
   end
   default_task :deploy
 end
