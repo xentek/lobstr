@@ -8,12 +8,18 @@ Gem::Specification.new do |gem|
   gem.version       = Lobstr::VERSION
   gem.authors       = ["Eric Marden"]
   gem.email         = ["eric@xentek.net"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{deployments so easy, even a zoidberg can do it}
+  gem.summary       = %q{lob branch@environment}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+
+  gem.add_dependency('thor')
+  gem.add_dependency('net-ssh')
+
+  gem.add_development_dependency('minitest', '3.4.0')
+
 end
