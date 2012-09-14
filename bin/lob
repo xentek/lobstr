@@ -1,3 +1,39 @@
 #!/usr/bin/env ruby
 
+require 'thor'
 require 'lobstr'
+
+class Lob < Thor
+  desc "deploy TARGET", "lobs code at the branch and environment you specify"
+  long_desc "lobs code at the branch and environment you specify, separated by @
+  \n\n 
+  Example: lob deploy master@production"  
+  def deploy(target='master@production')
+    branch,environment = target.split('@', 2)
+ 
+    if environment.nil? # e.g. production
+      environment = branch
+      branch = 'master'
+    end
+
+    branch = "master" if branch.empty? # e.g. @production
+    environment = "production" if environment.empty? # e.g. master@    
+    
+    say "deploying #{branch} to #{environment}", :blue
+  end
+  default_task :deploy
+end
+
+begin
+  ENV['THOR_DEBUG'] = '1'
+  Lob.start 
+rescue Thor::UndefinedTaskError => e
+  if ARGV[0] =~ /@/
+    Lob.new.invoke(:deploy, ARGV)
+  else
+    puts e.message
+  end
+rescue => e
+  ENV['THOR_DEBUG'] = '0'
+  raise e
+end
