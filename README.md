@@ -20,7 +20,29 @@ Or install it yourself as:
 
 ## Usage
    
-   $ lob branch@environment
+````bash
+$ lob deploy branch@environment
+````
+
+For your convenience, lobstr supports additional syntax you may find
+useful:
+
+````bash
+# without task name, but full branch and environment
+$ lob branch@environment
+
+# without task name or environment, currently defaults to "production"
+$ lob branch@
+
+# without task name or branch, currently defaults to "master"
+$ lob @producuction
+
+# without task name or branch (alt. syntax), currently defaults to "master"
+$ lob production
+
+# without any input, currently defaults to "master@production"
+$ lob
+````
 
 ## Configuration
 
