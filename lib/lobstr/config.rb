@@ -2,11 +2,17 @@ module Lobstr
   class Config
     def template
       <<-TEMPLATE.gsub!(/^        /,'')
-        lobstr:
+        lobstr: &defaults
           class: Lobstr::Deploy
-          default:
-            branch: 'master'
-            environment: 'production'
+          repos: git://github.com/xentek/lobstr.git
+          path: /app
+          ssh_host: localhost
+          ssh_user: lobstr
+          ssh_key:  ~/.ssh/id_rsa
+          branch:   'master'
+          environment: 'production'
+        production:
+          <<: *defaults
       TEMPLATE
     end
 
@@ -22,8 +28,8 @@ module Lobstr
       init
     end
 
-    def parse
-      YAML.load_file("config/lobstr.yml")['lobstr']
+    def parse(environment = 'production')
+      YAML.load_file("config/lobstr.yml")[environment]
     end
 
     def print

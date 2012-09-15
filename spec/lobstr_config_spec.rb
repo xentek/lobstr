@@ -45,12 +45,32 @@ describe Lobstr::Config do
       @config.parse['class'].must_equal 'Lobstr::Deploy'
     end
 
-    it "has a default branch" do
-      @config.parse['default']['branch'].must_equal 'master'
+    it "has a repos" do
+      @config.parse['repos'].must_equal 'git://github.com/xentek/lobstr.git'
+    end
+
+    it "has a path" do
+      @config.parse['path'].must_equal '/app'
     end
     
-    it "has a default environment" do
-      @config.parse['default']['environment'].must_equal 'production'
+    it "has an ssh host" do
+      @config.parse['ssh_host'].must_equal 'localhost'
+    end
+
+    it "has an ssh user" do
+      @config.parse['ssh_user'].must_equal 'lobstr'
+    end
+
+    it "has an ssh key" do
+      @config.parse['ssh_key'].must_equal '~/.ssh/id_rsa'
+    end
+
+    it "has a branch" do
+      @config.parse['branch'].must_equal 'master'
+    end
+    
+    it "has an environment" do
+      @config.parse['environment'].must_equal 'production'
     end
   end
 
