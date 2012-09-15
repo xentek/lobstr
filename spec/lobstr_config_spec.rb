@@ -12,38 +12,38 @@ describe Lobstr::Config do
   
   describe "template" do
     it "has a config template" do
-      @config.init
+      @config.create
       @config.template.wont_equal nil
     end
   end
 
-  describe "init" do
+  describe "create" do
     before do
       clean_up_config_file @config_file
     end
 
     it "can create a config file" do
-      @config.init.must_equal true
+      @config.create
       File.exist?(@config_file).must_equal true
     end
 
     it "won't create a config file if it exists already" do
-      @config.init
-      lambda { @config.init }.must_raise Lobstr::Error::ConfigFileExists
+      @config.create
+      lambda { @config.create }.must_raise Lobstr::Error::ConfigFileExists
     end
   end
   
   describe "reset" do
     it "can reset the configuration" do
-      @config.init
-      @config.reset.must_equal true
+      @config.create
+      @config.reset
       File.exist?(@config_file).must_equal true
     end
   end
 
   describe "parse" do
     before do
-      @config.init
+      @config.create
     end
 
     it "has a class" do
@@ -81,8 +81,26 @@ describe Lobstr::Config do
 
   describe "print" do
     it "can print the contents of the config file" do
-      @config.init
+      @config.create
       @config.print.wont_equal nil
+    end
+  end
+
+  describe "config_file_exists?" do
+    it "will return true if config file exists" do
+      @config.create
+      @config.send(:config_file_exists?).must_equal true
+    end
+
+    it "will return false if config file does not exist" do
+      @config.send(:config_file_exists?).must_equal false 
+    end
+  end
+
+  describe "check_config_file" do
+    it "will throw an error if config file does not exist" do
+      check = lambda { @config.send(:check_config_file) }
+      check.must_raise Lobstr::Error::ConfigFileMissing
     end
   end
 end
