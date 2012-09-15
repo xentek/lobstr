@@ -27,4 +27,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('minitest', '~> 3.4')
   gem.add_development_dependency('ansi',     '~> 1.4')
   gem.add_development_dependency('turn',     '~> 0.9')
+  gem.add_development_dependency('pry',     '~> 0.9')
 end
