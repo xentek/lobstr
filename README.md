@@ -1,6 +1,6 @@
 # Lobstr
 
-![why not lobstr?](http://f.cl.ly/items/0S392f3e3f00373A2l3Y/why-not-lobstr.jpg)
+[![Build Status](https://secure.travis-ci.org/xentek/lobstr.png)](http://travis-ci.org/xentek/lobstr)
 
 deployments so easy, even a zoidberg can do it.
 
