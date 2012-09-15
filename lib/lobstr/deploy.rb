@@ -1,4 +1,4 @@
 module Lobstr
-  class Deploy < Lobstr::Base
+  class Deploy < ::Lobstr::Base
   end
 end
