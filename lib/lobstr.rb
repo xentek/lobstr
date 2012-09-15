@@ -3,12 +3,12 @@
 require 'psych'
 require 'yaml'
 require 'lobstr/config'
+require 'lobstr/deploy'
 require 'lobstr/error'
 require 'lobstr/version'
 
 module Lobstr
-  class Deploy
-
+  class Base
     def parse_target(target)
       branch,environment = target.split('@', 2)
  
@@ -21,7 +21,5 @@ module Lobstr
       environment = "production" if environment.empty? # e.g. master@
       [branch,environment]
     end
-    
   end
-
 end
