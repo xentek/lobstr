@@ -15,6 +15,26 @@ class Lob < Thor
     say "deploying #{set_color(branch,:yellow)} to #{set_color(env, :yellow)}"
   end
   default_task :deploy
+
+  desc "config", "displays current configuration"
+  long_desc "displays current configuration"
+  method_option :init, :type => :boolean, :default => false,
+    :desc => "creates the configurtion file, unless it exists"
+  method_option :reset, :type => :boolean, :default => false,
+    :desc => "removes current configuration file and creates a new one"
+  def config
+    @config = Lobstr::Config.new
+
+    if options['init']
+      say "Created Lobstr Config:", :green if @config.init
+    end
+    
+    if options['reset']
+      say "Reset Lobstr Config:", :red if @config.reset
+    end
+
+    say @config.print
+  end
 end
 
 begin
@@ -24,9 +44,8 @@ rescue Thor::UndefinedTaskError => e
   if ARGV[0] =~ /@/
     Lob.new.invoke(:deploy, ARGV)
   else
-    puts e.message
+    Lob.new.say e.message, :on_red
   end
 rescue => e
-  ENV['THOR_DEBUG'] = '0'
-  raise e
+  Lob.new.say e.message, :on_red
 end
