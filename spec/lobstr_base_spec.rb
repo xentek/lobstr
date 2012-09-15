@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Lobstr::Deploy do
+describe Lobstr::Base do
 
   before do
-    @deploy = Lobstr::Deploy.new
+    @deploy = Lobstr::Base.new
   end
 
   describe "parse_target" do
