@@ -24,10 +24,13 @@ Or install it yourself as:
 $ lob deploy branch@environment
 ````
 
-For your convenience, lobstr supports additional syntax you may find
-useful:
+Since `deploy` is the default task, Lobstr supports additional syntax to
+save your typing fingers:
 
 ````bash
+# without branch or @ (requires task name though), currently defaults to "master"
+$ lob deploy production
+
 # without task name, but full branch and environment
 $ lob branch@environment
 
@@ -36,9 +39,6 @@ $ lob branch@
 
 # without task name or branch, currently defaults to "master"
 $ lob @producuction
-
-# without task name or branch (alt. syntax), currently defaults to "master"
-$ lob production
 
 # without any input, currently defaults to "master@production"
 $ lob
