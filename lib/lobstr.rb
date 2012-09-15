@@ -1,5 +1,10 @@
 # -*- encoding: utf-8 -*-
-require "lobstr/version"
+
+require 'psych'
+require 'yaml'
+require 'lobstr/config'
+require 'lobstr/error'
+require 'lobstr/version'
 
 module Lobstr
   class Deploy
@@ -14,9 +19,9 @@ module Lobstr
 
       branch = "master" if branch.empty? # e.g. @production
       environment = "production" if environment.empty? # e.g. master@
-
       [branch,environment]
     end
-
+    
   end
+
 end
