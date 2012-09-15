@@ -2,7 +2,7 @@
 
 deployments so easy, even a zoidberg can do it.
 
-![Build Status](https://secure.travis-ci.org/xentek/lobstr.png)](http://travis-ci.org/xentek/lobstr)
+[![Build Status](https://secure.travis-ci.org/xentek/lobstr.png)](http://travis-ci.org/xentek/lobstr)
 
 ## Installation
 
