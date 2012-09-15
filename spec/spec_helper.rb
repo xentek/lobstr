@@ -6,7 +6,8 @@ Turn.config do |c|
   c.format = :pretty
 end
 
-def clean_up_config_file
-  File.delete 'config/lobstr.yml' if File.exist? 'config/lobstr.yml'
-  Dir.delete 'config' if Dir.exist? 'config'
+def clean_up_config_file(config_file = 'spec/config/lobstr.yml')
+  config_path = File.dirname config_file
+  File.delete config_file if File.exist? config_file
+  Dir.delete config_path if Dir.exist? config_path
 end

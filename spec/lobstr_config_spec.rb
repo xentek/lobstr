@@ -2,11 +2,12 @@ require 'spec_helper'
 
 describe Lobstr::Config do
   before do
-    @config = Lobstr::Config.new
+    @config_file = 'spec/config/lobstr.yml'
+    @config = Lobstr::Config.new(@config_file)
   end
 
   after do
-    clean_up_config_file
+    clean_up_config_file @config_file
   end
   
   describe "template" do
@@ -18,12 +19,12 @@ describe Lobstr::Config do
 
   describe "init" do
     before do
-      clean_up_config_file 
+      clean_up_config_file @config_file
     end
 
     it "can create a config file" do
       @config.init.must_equal true
-      File.exist?('config/lobstr.yml').must_equal true
+      File.exist?(@config_file).must_equal true
     end
 
     it "won't create a config file if it exists already" do
@@ -36,6 +37,7 @@ describe Lobstr::Config do
     it "can reset the configuration" do
       @config.init
       @config.reset.must_equal true
+      File.exist?(@config_file).must_equal true
     end
   end
 
