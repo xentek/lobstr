@@ -6,8 +6,7 @@ describe Lobstr::Config do
   end
 
   after do
-    File.delete 'config/lobstr.yml'
-    Dir.delete 'config'
+    clean_up_config_file
   end
   
   describe "template" do
@@ -18,6 +17,10 @@ describe Lobstr::Config do
   end
 
   describe "init" do
+    before do
+      clean_up_config_file 
+    end
+
     it "can create a config file" do
       @config.init.must_equal true
       File.exist?('config/lobstr.yml').must_equal true
