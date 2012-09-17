@@ -1,4 +1,5 @@
 require 'lobstr'
+require 'minitest/mock'
 begin; require 'turn/autorun'; rescue LoadError; end
 Turn.config do |c|
   c.natural = true
