@@ -14,6 +14,11 @@ module Lobstr
         puts notify
       end
     end
+
+    def setup
+      # clone the repos
+      # export foreman to upstart
+    end
     
     def update
       puts "pull the latest from #{@config['repos']}"
@@ -24,6 +29,10 @@ module Lobstr
       remote_task "cd #{@config['path']}"
       remote_task 'git reflog delete --rewrite HEAD@{1}'
       remote_task 'git reflog delete --rewrite HEAD@{1}'    
+    end
+
+    def restart
+      # restart the app via upstart
     end
 
     def rollback
