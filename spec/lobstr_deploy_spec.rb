@@ -1,17 +1,18 @@
 require 'spec_helper'
 
 describe Lobstr::Deploy do
-
+  
   before do
     @config_file = 'spec/config/lobstr.yml'
     @config = Lobstr::Config.new(@config_file)
     @config.reset
     @config = @config.parse('lobstr')
+    $-w = nil
     Net::SSH = MiniTest::Mock.new
-    Net::SSH.expect(:start, @ssh, ['localhost','xentek',{:keys=>['~/.ssh/id_rsa']}])    
+    Net::SSH.expect(:start, @ssh, ['localhost','xentek',{:keys=>['~/.ssh/id_rsa']}])
+    $-w = false
     @ssh = MiniTest::Mock.new
   end
-
 
   after do
     clean_up_config_file @config_file
