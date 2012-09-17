@@ -45,17 +45,13 @@ describe Lobstr::Config do
     before do
       @config.create
     end
-
-    it "has a class" do
-      @config.parse['class'].must_equal 'Lobstr::Deploy'
-    end
-
+    
     it "has a repos" do
       @config.parse['repos'].must_equal 'git://github.com/xentek/lobstr.git'
     end
 
     it "has a path" do
-      @config.parse['path'].must_equal '/app'
+      @config.parse['path'].must_equal '~/lobstr'
     end
     
     it "has an ssh host" do
@@ -63,7 +59,7 @@ describe Lobstr::Config do
     end
 
     it "has an ssh user" do
-      @config.parse['ssh_user'].must_equal 'lobstr'
+      @config.parse['ssh_user'].must_equal 'xentek'
     end
 
     it "has an ssh key" do
