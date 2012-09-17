@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
   
   gem.add_dependency('thor',    '~> 0.16')
   gem.add_dependency('net-ssh', '~> 2.5')
+  gem.add_dependency('highline', '~> 1.6')
 
   gem.add_development_dependency('rake',     '~> 0.9.2')
   gem.add_development_dependency('minitest', '~> 3.4')
