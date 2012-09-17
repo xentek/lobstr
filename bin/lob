@@ -4,17 +4,33 @@ require 'thor'
 require 'lobstr'
 
 class Lob < Thor
+
+
   desc "deploy TARGET", "lobs code at the branch and environment you specify"
   long_desc "lobs code at the branch and environment you specify, separated by @
   \n\n 
-  Example: lob deploy master@production"  
+  Example: lob deploy master@production"
   def deploy(target='master@production')
-    lobstr = Lobstr::Deploy.new
-    branch,env = lobstr.parse_target(target)
-
-    say "deploying #{set_color(branch,:yellow)} to #{set_color(env, :yellow)}"
+    if File.exist? 'Lobfile'
+      Lobstr.target = target      
+      load "Lobfile"
+    else
+      lobstr target do
+        deploy
+      end
+    end
   end
   default_task :deploy
+
+  desc "rollback ENVIRONMENT", "rolls the last deployment back"
+  def rollback(environment)
+    lobstr environment do
+      connect do
+        rollback
+        notify(:rollback)
+      end
+    end
+  end
 
   desc "config", "displays current configuration"
   long_desc "displays current configuration"
@@ -26,7 +42,7 @@ class Lob < Thor
     @config = Lobstr::Config.new
 
     if options['init']
-      say "Created Lobstr Config:", :green if @config.init
+      say "Created Lobstr Config:", :green if @config.create
     end
     
     if options['reset']
@@ -44,8 +60,10 @@ rescue Thor::UndefinedTaskError => e
   if ARGV[0] =~ /@/
     Lob.new.invoke(:deploy, ARGV)
   else
-    Lob.new.say e.message, :on_red
+    Lob.new.say e.message, :red
   end
 rescue => e
+  p e
+  p e.backtrace.last
   Lob.new.say e.message, :on_red
 end
