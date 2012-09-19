@@ -25,6 +25,22 @@ describe Lobstr::Deploy do
       @ssh.exec! 'echo "yo"'
     end
   end
+
+  it "can set the app up" do
+    @deploy.expects(:bundle_install)
+    @deploy.expects(:foreman_export)    
+    @deploy.connect do
+      @ssh.expects(:exec!).with("git clone #{@config['repos']} #{@config['path']}")
+      setup
+    end
+  end
+
+  it "can deploy" do
+    @deploy.expects(:update)
+    @deploy.expects(:bundle_install)
+    @deploy.expects(:notify)
+    @deploy.deploy
+  end
   
   it "can update" do
     @deploy.connect do
@@ -38,12 +54,6 @@ describe Lobstr::Deploy do
     end
   end
 
-  it "can deploy" do
-    @deploy.expects(:update)
-    @deploy.expects(:notify)
-    @deploy.deploy
-  end
-
   it "can rollback" do 
     @deploy.connect do
       @ssh.expects(:exec!).with("cd #{@config['path']}")
@@ -55,6 +65,13 @@ describe Lobstr::Deploy do
 
   it "can notify" do
     skip "until this method does something, there is nothing to test"
+  end
+
+  it "can install bundled gems" do
+    @deploy.connect do
+      @ssh.expects(:exec!).with('bundle install --deployment  --path vendor/bundle --without development test ')
+      bundle_install
+    end
   end
 
   it "can export Procfiles with foreman" do

@@ -4,7 +4,7 @@ module Lobstr
       @branch,@environment = parse_target(target)
       @config = Lobstr::Config.new(config_file).parse(@environment)
       if block_given?
-        return self.instance_eval(&block)
+        return instance_eval(&block)
       else
         return self
       end
@@ -13,13 +13,15 @@ module Lobstr
     def deploy
       connect do
         update
+        bundle_install
         notify
       end
     end
 
     def setup(&block)
-      return self.instance_eval(&block) if block_given?
-      remote_task "git clone #{@config['path']} #{@config['path']}"
+      return instance_eval(&block) if block_given?
+      remote_task "git clone #{@config['repos']} #{@config['path']}"
+      bundle_install
       foreman_export(@config['app'], 'web=1', @config['user'])
     end
     
@@ -45,6 +47,21 @@ module Lobstr
 
     def notify(event = :deployment)
       "notify of #{event}"
+    end
+
+    def bundle_install(options = {})
+      if config.has_key? 'bundler'
+        options = @config['bundler'].merge(options)
+      else
+        options = {
+          'deployment' => nil,
+          'path' => 'vendor/bundle',
+          'without' => 'development test'
+        }.merge(options)
+      end
+      options_string = ''
+      options.each { |k,v| options_string += "--#{k} #{v} " }
+      remote_task "bundle install #{options_string}"
     end
 
     def export_foreman(format='upstart', location='/etc/init', options={})
