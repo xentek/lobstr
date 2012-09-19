@@ -10,6 +10,7 @@ module Lobstr
     def template
       <<-TEMPLATE.gsub!(/^        /,'')
         lobstr: &defaults
+          app: lobstr
           repos: git://github.com/xentek/lobstr.git
           path: ~/lobstr
           ssh_host: localhost
