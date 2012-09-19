@@ -16,10 +16,13 @@ module Lobstr
     end
 
     def connect(&block)
-      puts @config.inspect
-      @ssh = ::Net::SSH.start(@config['ssh_host'], 
-                              @config['ssh_user'], 
-                              :keys => [@config['ssh_key']])
+      begin
+        @ssh = ::Net::SSH.start(@config['ssh_host'], 
+                                @config['ssh_user'], 
+                                :keys => [@config['ssh_key']])
+      rescue => e
+        p e
+      end
       instance_eval(&block) if block_given? 
     end
 
