@@ -19,7 +19,7 @@ module Lobstr
       @ssh = ::Net::SSH.start(@config['ssh_host'], 
                               @config['ssh_user'], 
                               :keys => [@config['ssh_key']],
-                              :auth_methods => %w{ publickey })
+                              :auth_methods => ['publickey'])
       instance_eval(&block) if block_given? 
     end
 
