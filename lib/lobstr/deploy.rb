@@ -17,13 +17,6 @@ module Lobstr
         notify
       end
     end
-
-    def setup(&block)
-      return instance_eval(&block) if block_given?
-      remote_task "git clone #{@config['repos']} #{@config['path']}"
-      bundle_install
-      foreman_export(@config['app'], 'web=1', @config['user'])
-    end
     
     def update
       remote_task "cd #{@config['path']}"
@@ -47,6 +40,13 @@ module Lobstr
 
     def notify(event = :deployment)
       "notify of #{event}"
+    end
+
+    def setup(&block)
+      return instance_eval(&block) if block_given?
+      remote_task "git clone #{@config['repos']} #{@config['path']}"
+      bundle_install
+      export_foreman
     end
 
     def bundle_install(options = {})
