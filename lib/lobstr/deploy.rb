@@ -3,6 +3,7 @@ module Lobstr
     def initialize(target, config_file = 'config/lobstr.yml', &block)
       @branch,@environment = parse_target(target)
       @config = Lobstr::Config.new(config_file).parse(@environment)
+      @app = @config['app']
       if block_given?
         return instance_eval(&block)
       else
@@ -14,6 +15,7 @@ module Lobstr
       connect do
         update
         bundle_install
+        restart true
         notify
       end
     end

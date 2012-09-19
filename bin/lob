@@ -84,7 +84,6 @@ rescue Thor::UndefinedTaskError => e
     Lob.new.say e.message, :red
   end
 rescue => e
-  p e
-  p e.backtrace.last
+  p e.inspect
   Lob.new.say e.message, :on_red
 end

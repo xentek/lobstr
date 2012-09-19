@@ -1,7 +1,7 @@
 require 'minitest/mock'
 module Lobstr
   class Base
-    attr_accessor :branch, :environment, :config, :ssh
+    attr_accessor :app, :branch, :environment, :config, :ssh
     def parse_target(target)
       branch,environment = target.split('@', 2)
  
@@ -16,6 +16,7 @@ module Lobstr
     end
 
     def connect(&block)
+      puts @config.inspect
       @ssh = ::Net::SSH.start(@config['ssh_host'], 
                               @config['ssh_user'], 
                               :keys => [@config['ssh_key']])
