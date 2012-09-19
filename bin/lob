@@ -16,7 +16,9 @@ class Lob < Thor
       load "Lobfile"
     else
       lobstr target do
-        deploy
+        connect do
+          deploy
+        end
       end
     end
   end
@@ -28,6 +30,25 @@ class Lob < Thor
       connect do
         rollback
         notify(:rollback)
+      end
+    end
+  end
+
+  desc "setup ENVIRONMENT", "runs your setup recipe"
+  method_option :file, :type => :string, :aliases => '-f'
+  def setup(environment)
+    if options['file']
+      if File.exist? options['file']
+        load options['file'] 
+      else
+        say "#{set_color(options['file'] ,:yellow)} #{set_color('does not exist', :red)}"
+      end
+    else
+      lobstr environment do
+        connect do
+          setup
+          notify(:setup)
+        end
       end
     end
   end
