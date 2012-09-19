@@ -1,5 +1,5 @@
 require 'lobstr'
-require 'minitest/mock'
+require "mocha"
 begin; require 'turn/autorun'; rescue LoadError; end
 Turn.config do |c|
   c.natural = true
