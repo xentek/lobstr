@@ -30,4 +30,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('turn',     '~> 0.9')
   gem.add_development_dependency('pry',     '~> 0.9')
   gem.add_development_dependency('mocha',   '~> 0.12')
+  gem.add_development_dependency('gem-release',   '~> 0.4')
 end
