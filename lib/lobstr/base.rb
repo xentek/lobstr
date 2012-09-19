@@ -1,3 +1,4 @@
+require 'minitest/mock'
 module Lobstr
   class Base
     attr_accessor :branch, :environment, :config, :ssh
@@ -15,11 +16,10 @@ module Lobstr
     end
 
     def connect(&block)
-      keys = [@config['ssh_key']]
-      ::Net::SSH.start(@config['ssh_host'], @config['ssh_user'], :keys => keys) do |ssh|
-        @ssh = ssh
-        instance_eval(&block)
-      end
+      @ssh = ::Net::SSH.start(@config['ssh_host'], 
+                              @config['ssh_user'], 
+                              :keys => [@config['ssh_key']])
+      instance_eval(&block) if block_given? 
     end
 
     def remote_task(cmd)
