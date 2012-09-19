@@ -4,14 +4,15 @@ describe Lobstr::Deploy do
   
   before do
     @config_file = 'spec/config/lobstr.yml'
-    @config = Lobstr::Config.new(@config_file)
-    @config.reset
-    @config = @config.parse('lobstr')
+    @c = Lobstr::Config.new(@config_file)
+    @c.reset
+    @c = @c.parse('lobstr')
+    @deploy = Lobstr::Deploy.new('@lobstr', @config_file)
+    session = mock('Net::SSH::Connection::Session')
     $-w = nil
-    Net::SSH = MiniTest::Mock.new
-    Net::SSH.expect(:start, @ssh, ['localhost','xentek',{:keys=>['~/.ssh/id_rsa']}])
+    Net::SSH = mock('Net::SSH')
+    Net::SSH.expects(:start).with(@c['ssh_host'],@c['ssh_user'],{:keys=>[@c['ssh_key']]}).returns(session)
     $-w = false
-    @ssh = MiniTest::Mock.new
   end
 
   after do
@@ -19,55 +20,48 @@ describe Lobstr::Deploy do
   end
   
   it "can connect" do
-    @ssh.expect(:exec!,nil,['echo "yo"'])
-    lobstr '@lobstr', @config_file do
-      connect do
-        @ssh.exec! 'echo "yo"'
-      end
+    @deploy.connect do
+      @ssh.expects(:exec!).with('echo "yo"')
+      @ssh.exec! 'echo "yo"'
     end
   end
   
   it "can update" do
-    @ssh.expect(:exec!, nil, ["cd #{@config['path']}"])
-    @ssh.expect(:exec!, nil, ["git fetch origin"])
-    @ssh.expect(:exec!, nil, ["git reset --hard #{@branch}"])
-    @ssh.expect(:exec!, nil, ["cd #{@config['path']}"])
-    @ssh.expect(:exec!, nil, ["git reflog delete --rewrite HEAD@{1}"])
-    @ssh.expect(:exec!, nil, ["git reflog delete --rewrite HEAD@{1}"])
-    lobstr '@lobstr', @config_file do
-      connect do
-        update
-      end
+    @deploy.connect do
+      @ssh.expects(:exec!).with("cd #{@config['path']}")
+      @ssh.expects(:exec!).with("git fetch origin")
+      @ssh.expects(:exec!).with("git reset --hard #{@branch}")
+      @ssh.expects(:exec!).with("cd #{@config['path']}")
+      @ssh.expects(:exec!).with("git reflog delete --rewrite HEAD@{1}")
+      @ssh.expects(:exec!).with("git reflog delete --rewrite HEAD@{1}") 
+      update  
     end
   end
 
   it "can deploy" do
-    @ssh.expect(:exec!, nil, ["cd #{@config['path']}"])
-    @ssh.expect(:exec!, nil, ["git fetch origin"])
-    @ssh.expect(:exec!, nil, ["git reset --hard #{@branch}"])
-    @ssh.expect(:exec!, nil, ["cd #{@config['path']}"])
-    @ssh.expect(:exec!, nil, ["git reflog delete --rewrite HEAD@{1}"])
-    @ssh.expect(:exec!, nil, ["git reflog delete --rewrite HEAD@{1}"])
-    lobstr '@lobstr', @config_file do
-      connect do
-        deploy
-      end
-    end
+    @deploy.expects(:update)
+    @deploy.expects(:notify)
+    @deploy.deploy
   end
 
-  it "can rollback" do
-    @ssh.expect(:exec!, nil, ["cd #{@config['path']}"])
-    @ssh.expect(:exec!, nil, ["git fetch origin"])
-    @ssh.expect(:exec!, nil, ["git reset --hard HEAD@{1}"])
-    lobstr '@lobstr', @config_file do
-      connect do
-        rollback
-      end
+  it "can rollback" do 
+    @deploy.connect do
+      @ssh.expects(:exec!).with("cd #{@config['path']}")
+      @ssh.expects(:exec!).with("git fetch origin")
+      @ssh.expects(:exec!).with("git reset --hard HEAD@{1}")
+      rollback
     end
   end
 
   it "can notify" do
     skip "until this method does something, there is nothing to test"
+  end
+
+  it "can export Procfiles with foreman" do
+    @deploy.connect do
+      @ssh.expects(:exec!).with("foreman export upstart /etc/init --app #{@config['app']} --log #{@config['path']}/log --user #{@config['ssh_user']} --procfile #{@config['path']}/Procfile ")
+      export_foreman
+    end
   end
 
 end
