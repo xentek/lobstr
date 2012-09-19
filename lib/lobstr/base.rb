@@ -23,7 +23,7 @@ module Lobstr
     end
 
     def remote_task(cmd)
-      @ssh.exec! cmd
+      puts @ssh.exec! cmd
     end
 
     def local_task(cmd)
