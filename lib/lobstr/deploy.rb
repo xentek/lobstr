@@ -63,6 +63,7 @@ module Lobstr
       end
       options_string = ''
       options.each { |k,v| options_string += "--#{k} #{v} " }
+      remote_task "cd #{@config['path']}"
       remote_task "bundle install #{options_string}"
     end
 
@@ -85,7 +86,8 @@ module Lobstr
       options_string = ''
       options.each { |k,v| options_string += "--#{k} #{v} " }
       
-      remote_task "foreman export #{format} #{location} #{options_string}"
+      remote_task "cd #{@config['path']}"
+      remote_task "bundle exec foreman export #{format} #{location} #{options_string}"
     end
   end
 end
