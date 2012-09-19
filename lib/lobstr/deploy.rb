@@ -3,40 +3,41 @@ module Lobstr
     def initialize(target, config_file = 'config/lobstr.yml', &block)
       @branch,@environment = parse_target(target)
       @config = Lobstr::Config.new(config_file).parse(@environment)
-      return self.instance_eval(&block) if block_given?
-      deploy
-    end
-
-    def deploy
-      puts "deploying #{@branch} to #{@environment}"
-      connect do
-        update
-        puts notify
+      if block_given?
+        return self.instance_eval(&block)
+      else
+        return self
       end
     end
 
-    def setup
-      # clone the repos
-      # export foreman to upstart
+    def deploy
+      connect do
+        update
+        notify
+      end
+    end
+
+    def setup(&block)
+      return self.instance_eval(&block) if block_given?
+      remote_task "git clone #{@config['path']} #{@config['path']}"
+      foreman_export(@config['app'], 'web=1', @config['user'])
     end
     
     def update
-      puts "pull the latest from #{@config['repos']}"
       remote_task "cd #{@config['path']}"
       remote_task "git fetch origin"
       remote_task "git reset --hard #{@branch}"
-      puts "setting restore point"
       remote_task "cd #{@config['path']}"
       remote_task 'git reflog delete --rewrite HEAD@{1}'
       remote_task 'git reflog delete --rewrite HEAD@{1}'    
     end
 
-    def restart
-      # restart the app via upstart
+    def restart(sudo = true)
+      sudoit = (sudo) ? 'sudo' : ''
+      remote_task "#{sudoit} /etc/init.d/#{@config['app']}"
     end
 
     def rollback
-      puts "rollback deployment"
       remote_task "cd #{@config['path']}"
       remote_task "git fetch origin"
       remote_task "git reset --hard HEAD@{1}"
@@ -46,5 +47,26 @@ module Lobstr
       "notify of #{event}"
     end
 
+    def export_foreman(format='upstart', location='/etc/init', options={})
+      valid_formats = ['bluepill','inittab','runit','upstart']
+      unless valid_formats.include? format
+        raise Lobstr::Error::InvalidExportFormat
+      end
+      if @config.has_key? 'foreman'
+        options = @config['foreman'].merge(options)
+      else
+        options = {
+          'app'  => @config['app'],
+          'log'  => "#{@config['path']}/log",
+          'user' => @config['ssh_user'],
+          'procfile' => "#{@config['path']}/Procfile"
+        }.merge(options)
+      end
+
+      options_string = ''
+      options.each { |k,v| options_string += "--#{k} #{v} " }
+      
+      remote_task "foreman export #{format} #{location} #{options_string}"
+    end
   end
 end
