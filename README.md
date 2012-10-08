@@ -1,10 +1,15 @@
 # Lobstr
 
-[![Build Status](https://secure.travis-ci.org/xentek/lobstr.png)](http://travis-ci.org/xentek/lobstr)
+![why not lobstr?](http://f.cl.ly/items/0S392f3e3f00373A2l3Y/why-not-lobstr.jpg)
 
 deployments so easy, even a zoidberg can do it.
 
-![why not lobstr?](http://f.cl.ly/items/0S392f3e3f00373A2l3Y/why-not-lobstr.jpg)
+
+## Project Status
+
+- Build: [![Build Status](https://secure.travis-ci.org/xentek/lobstr.png)](http://travis-ci.org/xentek/lobstr)
+- Dependencies: [![Dependency Status](https://gemnasium.com/xentek/lobstr.png)](https://gemnasium.com/xentek/lobstr)
+- Code Quality: [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/xentek/lobstr)
 
 ## Installation
 
